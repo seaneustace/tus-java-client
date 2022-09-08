@@ -1,15 +1,10 @@
 package io.tus.java.example;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.URL;
+import io.tus.java.client.*;
 
-import io.tus.java.client.ProtocolException;
-import io.tus.java.client.TusClient;
-import io.tus.java.client.TusExecutor;
-import io.tus.java.client.TusURLMemoryStore;
-import io.tus.java.client.TusUpload;
-import io.tus.java.client.TusUploader;
+import javax.net.ssl.HttpsURLConnection;
+import java.io.*;
+import java.net.URL;
 
 /**
  * A representative Example class to show an usual usecase.
@@ -27,12 +22,62 @@ public final class Main {
             // redirects but still work correctly.
             System.setProperty("http.strictPostRedirect", "true");
 
+            //String str1 = new doPost();
+            //String convertedToString = String.valueOf(obj1);
+            // Create a new TusClient instance
+            //System.out.println(str1);
+
+
+            /***************
+            hgfhhhhhhhhhhhhhhhhhhhhhfghfhg
+            */
+
+            String url = "https://api.cloudflare.com/client/v4/accounts/e60f3efad5b2c687c1d6a32063fd8122/stream?direct_user=true";
+
+            HttpsURLConnection httpClient = (HttpsURLConnection) new URL(url).openConnection();
+
+            //add reuqest header
+            httpClient.setRequestMethod("POST");
+            httpClient.setRequestProperty("authorization", "bearer ke0oh9MvPfawKYEsfu2KTHP0ZkZXuOFRX30BlwFa");
+            httpClient.setRequestProperty("upload-length", "100450390");
+            httpClient.setRequestProperty("Tus-Resumable", "1.0.0");
+
+            String urlParameters = "";
+
+            // Send post request
+            httpClient.setDoOutput(true);
+            try (DataOutputStream wr = new DataOutputStream(httpClient.getOutputStream())) {
+                wr.writeBytes(urlParameters);
+                wr.flush();
+            }
+
+            String responseLocation = httpClient.getHeaderField("Location");
+            System.out.println("\nSending 'POST' request to URL : " + url);
+            System.out.println("Post parameters : " + urlParameters);
+            System.out.println("Location : " + responseLocation);
+
+
+            try (BufferedReader in = new BufferedReader(
+                    new InputStreamReader(httpClient.getInputStream()))) {
+
+                String line;
+                StringBuilder response = new StringBuilder();
+
+                while ((line = in.readLine()) != null) {
+                    response.append(line);
+                }
+
+            }
+            //print result
+            responseLocation.replace("Location: ", "");
+            System.out.println(responseLocation.toString());
+
             // Create a new TusClient instance
             final TusClient client = new TusClient();
 
             // Configure tus HTTP endpoint. This URL will be used for creating new uploads
             // using the Creation extension
-            client.setUploadCreationURL(new URL("https://tusd.tusdemo.net/files/"));
+            client.setUploadCreationURL(new URL(responseLocation));
 
             // Enable resumable uploads by storing the upload URL in memory
             client.enableResuming(new TusURLMemoryStore());
@@ -40,7 +85,7 @@ public final class Main {
             // Open a file using which we will then create a TusUpload. If you do not have
             // a File object, you can manually construct a TusUpload using an InputStream.
             // See the documentation for more information.
-            File file = new File("./example/assets/prairie.jpg");
+            File file = new File("./example/assets/Samplevod2.mp4");
             final TusUpload upload = new TusUpload(file);
 
             // You can also upload from an InputStream directly using a bit more work:
@@ -76,7 +121,6 @@ public final class Main {
                         long totalBytes = upload.getSize();
                         long bytesUploaded = uploader.getOffset();
                         double progress = (double) bytesUploaded / totalBytes * 100;
-
                         System.out.printf("Upload at %06.2f%%.\n", progress);
                     } while (uploader.uploadChunk() > -1);
 
