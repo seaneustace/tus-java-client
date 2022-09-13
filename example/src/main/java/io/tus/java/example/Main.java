@@ -41,6 +41,9 @@ public final class Main {
             httpClient.setRequestProperty("authorization", "bearer ke0oh9MvPfawKYEsfu2KTHP0ZkZXuOFRX30BlwFa");
             httpClient.setRequestProperty("upload-length", "100450390");
             httpClient.setRequestProperty("Tus-Resumable", "1.0.0");
+            //httpClient.setRequestProperty("Upload-Metadata", "filename: 'test.mp4', filetype: 'video/mp4', defaulttimestamppct: 0.5, watermark: ''"
+                                          
+            //curl -X POST -svo /dev/null/ "https://api.cloudflare.com/client/v4/accounts/e60f3efad5b2c687c1d6a32063fd8122/stream" -H "Authorization: bearer v0DtATkraTFXRN7NCsJBuQ6U4-HqOgK6aPb9ZNiA" -H "upload-length: 100450390" -H "Tus-Resumable: 1.0.0" -H "Content-Type: application/json" --data '{"thumbnailTimestampPct":0.529241, "filename":'test.mp4', "filetype":'video/mp4'}'   
 
             String urlParameters = "";
 
